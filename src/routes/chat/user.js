@@ -43,6 +43,7 @@ async function findUsers(names) {
     } catch(error) {
         log.error('Fetch was aborted (vislaud down).')
         if(++timeouts > 25) {
+            timeouts = 0;
             traffic.stop = true;
             traffic.time = Date.now() + 60000;
             log.info('Stopping traffic for vislaud.');
