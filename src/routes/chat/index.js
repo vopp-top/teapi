@@ -9,7 +9,6 @@ chatRouter.get('/:name', async (request, response) => {
     const names = request.params.name.split(',').slice(0, 100);
     const users = [];
     const toFind = [];
-    console.log(names);
     for(const name of names) {
         const user = await client.get(`teapi.chat.${name}`);
         if(!user) toFind.push(name);
