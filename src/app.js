@@ -7,8 +7,8 @@ import SimpleNodeLogger from 'simple-node-logger';
 export const app = express();
 
 export const log = SimpleNodeLogger.createSimpleLogger({
-    logFilePath:'logs.log',
-    timestampFormat:'YYYY-MM-DD HH:mm:ss.SSS'
+    logFilePath: 'logs.log',
+    timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS'
 });
 
 const chatLimiter = rateLimit({

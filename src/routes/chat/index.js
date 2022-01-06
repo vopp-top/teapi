@@ -22,7 +22,7 @@ async function findUsers(names) {
     const data = await fetch(`https://vislaud.com/api/chatters?logins=${names.join(',')}`);
     const json = await data.json();
     for(const user of json) {
-        client.setEx(`teapi.chat.${user.login}`, 10, JSON.stringify(user));
+        client.setEx(`teapi.chat.${user.login}`, 300, JSON.stringify(user));
         log.info(`Saving new user: ${user.login}.`);
     }
     return json;
