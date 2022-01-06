@@ -9,4 +9,4 @@ export const client = await createClient({
 });
 await client.connect();
 
-app.listen(3112, () => console.log(`🚀 teapi ${process.env.npm_package_version} / PORT: 3112`));
+app.listen(7773, () => console.log(`🚀 teapi ${process.env.npm_package_version} / PORT: 7773`));

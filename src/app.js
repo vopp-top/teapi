@@ -28,6 +28,7 @@ app.use(cors({
 }));
 app.use(express.static('public'));
 app.set('json spaces', 2);
+app.set('trust proxy', 1);
 
 app.use('/chat', userRouter, chatLimiter);
 app.use('/groupBadges', groupsRouter, globalLimiter);
