@@ -20,11 +20,31 @@ userRouter.get('/:name', async (request, response) => {
 });
 
 async function findUsers(names) {
-    const data = await fetch(`https://vislaud.com/api/chatters?logins=${names.join(',')}`);
-    const json = await data.json();
-    for(const user of json) {
-        client.setEx(`teapi.chat.${user.login}`, 300, JSON.stringify(user));
-        log.info(`Saving new user: ${user.login}.`);
+    try {
+        const data = await fetchWithTimeout(`https://vislaud.com/api/chatters?logins=${names.join(',')}`, {
+            timeout: 10000
+        });
+        const json = await data.json();
+        for(const user of json) {
+            client.setEx(`teapi.chat.${user.login}`, 300, JSON.stringify(user));
+            log.info(`Saving new user: ${user.login}.`);
+        }
+        return json;
+    } catch(error) {
+        log.error('Fetch was aborted (vislaud down).')
     }
-    return json;
+    return [];
+}
+
+async function fetchWithTimeout(resource, options = {}) {
+    const { timeout = 8000 } = options;
+    
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal  
+    });
+    clearTimeout(id);
+    return response;
 }
