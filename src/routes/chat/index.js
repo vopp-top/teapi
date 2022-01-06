@@ -6,16 +6,17 @@ import { log } from '../../app';
 export const chatRouter = express.Router();
 
 chatRouter.get('/:name', async (request, response) => {
-    const names = request.params.name.split(',');
-    names.length = 100;
+    const names = request.params.name.split(',').slice(0, 100);
     const users = [];
     const toFind = [];
+    console.log(names);
     for(const name of names) {
         const user = await client.get(`teapi.chat.${name}`);
         if(!user) toFind.push(name);
         else users.push(JSON.parse(user));
     }
-    users.push(...await findUsers(toFind));
+    const foundUsers = await findUsers(toFind);
+    users.push(...foundUsers);
     response.status(200).json(users);
 });
 
