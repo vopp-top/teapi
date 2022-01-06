@@ -31,9 +31,7 @@ userRouter.get('/:name', async (request, response) => {
 
 async function findUsers(names) {
     try {
-        const data = await fetchWithTimeout(`https://vislaud.com/api/chatters?logins=${names.join(',')}`, {
-            timeout: 10000
-        });
+        const data = await fetchWithTimeout(`https://vislaud.com/api/chatters?logins=${names.join(',')}`, {}, 10000);
         const json = await data.json();
         for(const user of json) {
             client.setEx(`teapi.chat.${user.login}`, 3600, JSON.stringify(user));
@@ -41,7 +39,7 @@ async function findUsers(names) {
         }
         return json;
     } catch(error) {
-        log.error('Fetch was aborted (vislaud down).')
+        log.error(`Fetch was aborted (${error.message}).`);
         if(++timeouts > 25) {
             timeouts = 0;
             traffic.stop = true;
@@ -52,17 +50,13 @@ async function findUsers(names) {
     return [];
 }
 
-async function fetchWithTimeout(resource, options = {}) {
-    const { timeout = 8000 } = options;
-    
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    const response = await fetch(resource, {
-      ...options,
-      signal: controller.signal  
-    });
-    clearTimeout(id);
-    return response;
+async function fetchWithTimeout(url, options, timeout = 7000) {
+    return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('timeout')), timeout)
+        )
+    ]);
 }
 
 setInterval(() => {
