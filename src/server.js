@@ -1,14 +1,12 @@
 import { app } from './app';
-import redis from 'node-redis';
+import { createClient } from 'redis';
+import dotenv from 'dotenv';
+dotenv.config();
 
-export const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-
-export const client = redis.createClient({
-    host: config.redis.host,
-    port: config.redis.port
+export const client = await createClient({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
 });
-if(config.redis.password.length > 0) {
-    console.info('Logging to redis with password...');
-    client.auth(config.redis.password);
-}
-app.listen(config.port, () => console.log(`Service running at port ${config.port}`));
+await client.connect();
+
+app.listen(3112, () => console.log(`🚀 teapi ${process.env.npm_package_version} / PORT: 3112`));
