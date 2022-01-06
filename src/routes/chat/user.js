@@ -36,7 +36,7 @@ async function findUsers(names) {
         });
         const json = await data.json();
         for(const user of json) {
-            client.setEx(`teapi.chat.${user.login}`, 300, JSON.stringify(user));
+            client.setEx(`teapi.chat.${user.login}`, 3600, JSON.stringify(user));
             log.info(`Saving new user: ${user.login}.`);
         }
         return json;
