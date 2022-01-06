@@ -2,7 +2,7 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import SimpleNodeLogger from 'simple-node-logger';
-import { userRouter, groupsRouter, honorsRouter, videosRouter } from './routes'
+import { userRouter, groupsRouter, honorsRouter, videosRouter, count } from './routes'
 
 export const app = express();
 
@@ -29,6 +29,8 @@ app.use(cors({
 app.use(express.static('public'));
 app.set('json spaces', 2);
 app.set('trust proxy', 1);
+
+app.all('*', count);
 
 app.use('/chat', userRouter, chatLimiter);
 app.use('/groupBadges', groupsRouter, globalLimiter);
