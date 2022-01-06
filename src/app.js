@@ -1,7 +1,7 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
-import { chatRouter } from './routes/chat'
+import { userRouter } from './routes/chat/user'
 import SimpleNodeLogger from 'simple-node-logger';
 
 export const app = express();
@@ -23,7 +23,7 @@ app.use(cors({
 }));
 app.set('json spaces', 2);
 
-app.use('/chat', chatRouter, chatLimiter);
+app.use('/chat', userRouter, chatLimiter);
 
 app.get('/', (request, response) => {
     response.status(200).json({ version: process.env.npm_package_version });
