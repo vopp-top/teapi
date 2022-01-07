@@ -13,7 +13,7 @@ const traffic = {
 
 userRouter.get('/:name', async (request, response) => {
     if(traffic.stop) {
-        if(traffic.time >= Date.now()) return response.status(200).json([]);
+        if(traffic.time >= Date.now()) return response.status(503).json([]);
         traffic.stop = false;
     }
     const names = request.params.name.split(',').slice(0, 100);
