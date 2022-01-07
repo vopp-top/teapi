@@ -33,11 +33,33 @@ async function findUsers(names) {
     try {
         const data = await fetchWithTimeout(`https://vislaud.com/api/chatters?logins=${names.join(',')}`, {}, 10000);
         const json = await data.json();
+        const users = [];
         for(const user of json) {
-            client.setEx(`teapi.chat.${user.login}`, 3600, JSON.stringify(user));
-            log.info(`Saving new user: ${user.login}.`);
+            user.watchtimes.sort((a, b) => {
+                return b.watchtime - a.watchtime;
+            });
+            const streamer = user.watchtimes[0].streamer;
+            if(!streamer) return [];
+            const newUser = {
+                login: user.login,
+                watchtimes: [
+                    {
+                        watchtime: 1,
+                        streamer: {
+                            displayName: streamer.displayName,
+                            profileImageUrl: streamer.profileImageUrl
+                        }
+                    },
+                    {
+                        watchtime: 0
+                    }
+                ]
+            }
+            users.push(newUser);
+            client.setEx(`teapi.chat.${newUser.login}`, 300, JSON.stringify(newUser));
+            log.info(`Saving new user: ${newUser.login}.`);
         }
-        return json;
+        return users;
     } catch(error) {
         log.error(`Fetch was aborted (${error.message}).`);
         if(++timeouts > 25) {
