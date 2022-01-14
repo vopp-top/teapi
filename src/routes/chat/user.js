@@ -49,15 +49,11 @@ async function findUsers(names) {
                             displayName: streamer.displayName,
                             profileImageUrl: streamer.profileImageUrl
                         }
-                    },
-                    {
-                        watchtime: 0
                     }
                 ]
             }
             users.push(newUser);
             client.setEx(`teapi.chat.${newUser.login}`, 300, JSON.stringify(newUser));
-            log.info(`Saving new user: ${newUser.login}.`);
         }
         return users;
     } catch(error) {
