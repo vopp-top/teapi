@@ -2,6 +2,7 @@ import express from 'express';
 import fetch from 'node-fetch';
 import { client } from '../../server'
 import { log } from '../../app';
+import { addChatter } from './chatters'
 
 export const userRouter = express.Router();
 
@@ -24,12 +25,12 @@ userRouter.get('/:name', async (request, response) => {
         if(!user) toFind.push(name);
         else users.push(JSON.parse(user));
     }
-    const foundUsers = await findUsers(toFind);
+    const foundUsers = await findUsers(toFind, request.query.channel);
     users.push(...foundUsers);
     response.status(200).json(users);
 });
 
-async function findUsers(names) {
+async function findUsers(names, channel) {
     try {
         const data = await fetchWithTimeout(`https://vislaud.com/api/chatters?logins=${names.join(',')}`, {}, 10000);
         const json = await data.json();
@@ -54,6 +55,7 @@ async function findUsers(names) {
             }
             users.push(newUser);
             client.setEx(`teapi.chat.${newUser.login}`, 300, JSON.stringify(newUser));
+            if(channel) addChatter(newUser.login, channel)
         }
         return users;
     } catch(error) {

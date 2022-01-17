@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import SimpleNodeLogger from 'simple-node-logger';
 import swaggerStats from 'swagger-stats';
-import { userRouter, groupsRouter, honorsRouter, videosRouter } from './routes'
+import { userRouter, groupsRouter, honorsRouter, videosRouter, chattersRouter } from './routes'
 
 export const app = express();
 
@@ -17,11 +17,17 @@ const chatLimiter = rateLimit({
     max: 1,
     message: { error: 'Too many requests in 5 second.' }
 });
+const chattersLimiter = rateLimit({
+    windowMs: 15000,
+    max: 3,
+    message: { error: 'Too many requests in 15 seconds.' }
+});
 const globalLimiter = rateLimit({
     windowMs: 1000,
     max: 3,
     message: { error: 'Too many requests in one second.' }
 });
+
 app.use(swaggerStats.getMiddleware({
     authentication: true,
     onAuthenticate: (req, username, password) => {
@@ -38,6 +44,7 @@ app.set('json spaces', 2);
 app.set('trust proxy', 1);
 
 app.use('/chat', userRouter, chatLimiter);
+app.use('/chatters', chattersRouter, chattersLimiter);
 app.use('/groupBadges', groupsRouter, globalLimiter);
 app.use('/honors', honorsRouter, globalLimiter);
 app.use('/videos', videosRouter, globalLimiter);
