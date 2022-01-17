@@ -12,7 +12,7 @@ chattersRouter.get('/:channel', async (request, response) => {
 
 async function getChatters(channel) {
     await client.zRemRangeByScore(`teapi.chatters.${channel}`, '-inf', Date.now() - 300000);
-    return await client.zRange(`teapi.chatters.${channel}`, 0, -1, { LIMIT: 1000 });
+    return await client.zRange(`teapi.chatters.${channel}`, '0', '1000');
 }
 
 async function findChatters(chatters) {
