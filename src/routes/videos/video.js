@@ -7,7 +7,7 @@ export const videoRouter = express.Router();
 videoRouter.get('/:id', async (request, response) => {
     const id = request.params.id;
     let video = await client.get(`teapi.video.${id}`);
-    if(!video) videos = await getVideo(id);
+    if(!video) video = await getVideo(id);
     else video = JSON.parse(video);
     response.status(200).json(video);
 });
