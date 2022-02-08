@@ -4,3 +4,4 @@ export { honorsRouter } from './honors/';
 export { videosRouter } from './videos/videos';
 export { videoRouter } from './videos/video'
 export { chattersRouter } from './chat/chatters';
+export { xayoRouter } from './user/xayo'

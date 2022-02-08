@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import SimpleNodeLogger from 'simple-node-logger';
 import swaggerStats from 'swagger-stats';
-import { userRouter, groupsRouter, honorsRouter, videosRouter, videoRouter, chattersRouter } from './routes'
+import { userRouter, groupsRouter, honorsRouter, videosRouter, videoRouter, chattersRouter, xayoRouter } from './routes'
 
 export const app = express();
 
@@ -49,6 +49,7 @@ app.use('/groupBadges', groupsRouter, globalLimiter);
 app.use('/honors', honorsRouter, globalLimiter);
 app.use('/videos', videosRouter, globalLimiter);
 app.use('/video', videoRouter, globalLimiter);
+app.use('/user/xayo', xayoRouter, globalLimiter);
 
 app.get('/', (request, response) => {
     response.status(200).json({ version: process.env.npm_package_version });
