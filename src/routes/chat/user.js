@@ -45,7 +45,7 @@ async function findUsers(names, channel) {
                 login: user.login,
                 watchtimes: [
                     {
-                        watchtime: 1,
+                        watchtime: user.watchtimes[0].watchtime,
                         streamer: {
                             displayName: streamer.displayName,
                             profileImageUrl: streamer.profileImageUrl
