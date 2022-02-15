@@ -60,10 +60,10 @@ async function findUsers(names, channel) {
         return users;
     } catch(error) {
         log.error(`Fetch was aborted (${error.message}).`);
-        if(++timeouts > 25) {
+        if(++timeouts > 100) {
             timeouts = 0;
             traffic.stop = true;
-            traffic.time = Date.now() + 60000;
+            traffic.time = Date.now() + 10000;
             log.info('Stopping traffic for vislaud.');
         }
     }
