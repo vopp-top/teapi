@@ -39,6 +39,7 @@ async function findUsers(names, channel) {
             user.watchtimes.sort((a, b) => {
                 return b.watchtime - a.watchtime;
             });
+            if(user.watchtimes.length < 1) return;
             const streamer = user.watchtimes[0].streamer;
             if(!streamer) return [];
             const newUser = {
