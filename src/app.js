@@ -2,7 +2,6 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import SimpleNodeLogger from 'simple-node-logger';
-import swaggerStats from 'swagger-stats';
 import { userRouter, groupsRouter, honorsRouter, videosRouter, videoRouter, chattersRouter, xayoRouter } from './routes'
 
 export const app = express();
@@ -28,13 +27,6 @@ const globalLimiter = rateLimit({
     message: { error: 'Too many requests in one second.' }
 });
 
-app.use(swaggerStats.getMiddleware({
-    authentication: true,
-    onAuthenticate: (req, username, password) => {
-        return((username == process.env.METRICS_LOGIN) 
-            && (password == process.env.METRICS_PASSWORD));
-      }
-}));
 app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200
