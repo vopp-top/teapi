@@ -16,7 +16,6 @@ export function measure(req, res, next) {
         stats.request_time.count++;
         stats.request_time.time += getDurationInMilliseconds(start);
     });
-    console.log(stats);
 }
 
 function getDurationInMilliseconds(start) {
