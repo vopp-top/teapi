@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import SimpleNodeLogger from 'simple-node-logger';
 import { userRouter, groupsRouter, honorsRouter, videosRouter, videoRouter, chattersRouter, xayoRouter } from './routes'
+import { measure } from './metrics';
 
 export const app = express();
 
@@ -31,6 +32,7 @@ app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200
 }));
+app.use(measure);
 app.use(express.static('public'));
 app.set('json spaces', 2);
 app.set('trust proxy', 1);
