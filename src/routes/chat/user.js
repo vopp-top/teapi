@@ -52,7 +52,8 @@ async function findUsers(names, channel) {
                             profileImageUrl: streamer.profileImageUrl
                         }
                     }
-                ]
+                ],
+                cache: (user.watchtimes[1] ?  (user.watchtimes[0].watchtime * 60) - (user.watchtimes[1].watchtime * 60) : 86400)
             }
             users.push(newUser);
             client.setEx(`teapi.chat.${newUser.login}`, 300, JSON.stringify(newUser));
