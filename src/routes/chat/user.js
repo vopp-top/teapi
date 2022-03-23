@@ -25,8 +25,10 @@ userRouter.get('/:name', async (request, response) => {
         if(!user) toFind.push(name);
         else users.push(JSON.parse(user));
     }
-    const foundUsers = await findUsers(toFind, request.query.channel);
-    users.push(...foundUsers);
+    if(toFind.length > 0) {
+        const foundUsers = await findUsers(toFind, request.query.channel);
+        users.push(...foundUsers);
+    }
     response.status(200).json(users);
 });
 
