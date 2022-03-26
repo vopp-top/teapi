@@ -17,6 +17,7 @@ userRouter.get('/:name', async (request, response) => {
         if(traffic.time >= Date.now()) return response.status(503).json([]);
         traffic.stop = false;
     }
+    let status = 200;
     const names = request.params.name.split(',').slice(0, 100);
     const users = [];
     const toFind = [];
@@ -27,9 +28,10 @@ userRouter.get('/:name', async (request, response) => {
     }
     if(toFind.length > 0) {
         const foundUsers = await findUsers(toFind, request.query.channel);
-        users.push(...foundUsers);
+        status = foundUsers.status;
+        users.push(...foundUsers.users);
     }
-    response.status(200).json(users);
+    response.status(status).json(users);
 });
 
 async function findUsers(names, channel) {
@@ -61,7 +63,7 @@ async function findUsers(names, channel) {
             client.setEx(`teapi.chat.${newUser.login}`, 300, JSON.stringify(newUser));
             if(channel) addChatter(newUser.login, channel)
         }
-        return users;
+        return { status: 200, users };
     } catch(error) {
         log.error(`Fetch was aborted (${error.message}).`);
         if(++timeouts > 100) {
@@ -71,7 +73,7 @@ async function findUsers(names, channel) {
             log.info('Stopping traffic for vislaud.');
         }
     }
-    return [];
+    return { status: 408, users: [] };
 }
 
 async function fetchWithTimeout(url, options, timeout = 7000) {
